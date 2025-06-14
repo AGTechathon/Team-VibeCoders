@@ -1,12 +1,6 @@
 
 'use server';
-/**
- * @fileOverview A conversational AI agent for explaining concepts on a given topic.
- *
- * - topicQuery - A function that handles user queries about a specific topic.
- * - TopicQueryInput - The input type for the topicQuery function.
- * - TopicQueryOutput - The return type for the topicQuery function.
- */
+
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
