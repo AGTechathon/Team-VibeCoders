@@ -1,11 +1,11 @@
 import { AppLayout } from '@/components/layout/AppLayout';
-import { GrammarCheckClient } from '@/components/grammar-check/GrammarCheckClient';
+import { QandAClient } from '@/components/q-and-a/QandAClient';
 
-export default function GrammarCheckPage() {
+export default function QandAPage() {
   return (
     <AppLayout>
       <div className="container mx-auto py-8">
-        <GrammarCheckClient />
+        <QandAClient />
       </div>
     </AppLayout>
   );
