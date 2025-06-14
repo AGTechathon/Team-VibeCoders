@@ -1,13 +1,10 @@
-"use client";
-import React from 'react';
-export const dynamic = 'force-dynamic';
-import LiveIDE from '@/LiveIDE/page';
-
-
-export default function Home() {
+ 
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-  <div>
-    <LiveIDE/>  
-  </div>
-  );
+    <html>
+      <body>
+        {children}
+      </body>
+    </html>
+  )
 }
