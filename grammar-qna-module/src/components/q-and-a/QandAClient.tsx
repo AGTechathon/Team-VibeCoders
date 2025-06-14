@@ -70,7 +70,7 @@ export function QandAClient() {
             isLoading: false,
             text: updates.text !== undefined ? updates.text : msg.text,
             aiStructuredResponse: updates.aiStructuredResponse !== undefined ? updates.aiStructuredResponse : msg.aiStructuredResponse,
-            timestamp: new Date(), // Update timestamp on final response
+            timestamp: new Date(), 
           }
         : msg
     ));
@@ -124,7 +124,7 @@ export function QandAClient() {
               isOutOfScope: response.isOutOfScope,
               outOfScopeMessage: response.outOfScopeMessage,
             },
-            text: undefined, // Clear "Thinking..."
+            text: undefined, 
         });
 
         if (response.followUpQuestion && !response.isOutOfScope) {
