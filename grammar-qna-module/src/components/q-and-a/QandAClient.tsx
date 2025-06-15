@@ -10,7 +10,7 @@ import { topicQuery, type TopicQueryOutput } from '@/ai/flows/topic-query-flow';
 import { validateTopic, type ValidateTopicOutput } from '@/ai/flows/validate-topic-flow';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, SendHorizontal, MessageCircle, Bot, User, Lightbulb } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 interface ChatMessage {
   id: string;

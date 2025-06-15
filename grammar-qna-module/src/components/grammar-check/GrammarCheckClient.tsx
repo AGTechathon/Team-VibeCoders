@@ -10,7 +10,7 @@ import { grammarCheck, type GrammarCheckOutput, type Suggestion } from '@/ai/flo
 import { generateExtemporeTopic, type GenerateExtemporeTopicOutput } from '@/ai/flows/extempore-topic-flow';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Sparkles, Mic, MicOff, BookOpen, CheckCircle, Info } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 let recognition: any = null;
 if (typeof window !== "undefined") {
