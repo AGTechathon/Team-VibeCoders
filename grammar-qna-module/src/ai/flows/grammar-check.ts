@@ -1,46 +1,94 @@
+"use server";
 
-'use server';
-
-
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from "@/ai/genkit";
+import { z } from "genkit";
 
 const GrammarCheckInputSchema = z.object({
-  text: z.string().describe('The speech transcript to analyze for grammar and speaking improvements.'),
-  topic: z.string().optional().describe('The topic of the speech, if provided, for context and relevance assessment.'),
+  text: z
+    .string()
+    .describe(
+      "The speech transcript to analyze for grammar and speaking improvements."
+    ),
+  topic: z
+    .string()
+    .optional()
+    .describe(
+      "The topic of the speech, if provided, for context and relevance assessment."
+    ),
 });
 
 export type GrammarCheckInput = z.infer<typeof GrammarCheckInputSchema>;
 
 const SuggestionSchema = z.object({
-  id: z.string().describe("A unique identifier for this suggestion (e.g., 's1', 's2'). This ID must match a data-suggestion-id in highlightedCorrectedText."),
-  text: z.string().describe("The suggestion text explaining the correction or improvement."),
-  type: z.enum(["grammar", "filler", "complex_word", "clarity", "conciseness"])
-    .describe("The type of suggestion: 'grammar' for grammatical errors, 'filler' for verbal fillers (e.g., um, uh, like), 'complex_word' for overly complex vocabulary, 'clarity' for clarity improvements, 'conciseness' for conciseness improvements."),
-  originalSegment: z.string().optional().describe("The original text segment that this suggestion refers to. For fillers, this would be the filler itself."),
-  suggestedReplacement: z.string().optional().describe("The suggested replacement for the original segment. For fillers, this might be empty (suggesting removal) or a rephrased segment.")
+  id: z
+    .string()
+    .describe(
+      "A unique identifier for this suggestion (e.g., 's1', 's2'). This ID must match a data-suggestion-id in highlightedCorrectedText."
+    ),
+  text: z
+    .string()
+    .describe("The suggestion text explaining the correction or improvement."),
+  type: z
+    .enum(["grammar", "filler", "complex_word", "clarity", "conciseness"])
+    .describe(
+      "The type of suggestion: 'grammar' for grammatical errors, 'filler' for verbal fillers (e.g., um, uh, like), 'complex_word' for overly complex vocabulary, 'clarity' for clarity improvements, 'conciseness' for conciseness improvements."
+    ),
+  originalSegment: z
+    .string()
+    .optional()
+    .describe(
+      "The original text segment that this suggestion refers to. For fillers, this would be the filler itself."
+    ),
+  suggestedReplacement: z
+    .string()
+    .optional()
+    .describe(
+      "The suggested replacement for the original segment. For fillers, this might be empty (suggesting removal) or a rephrased segment."
+    ),
 });
 
 export type Suggestion = z.infer<typeof SuggestionSchema>;
 
 const GrammarCheckOutputSchema = z.object({
-  analyzedText: z.string().describe('The original speech transcript that was analyzed. This is always populated.'),
-  correctedText: z.string().describe('If the speech was on-topic, this is the clean version with improvements. If off-topic, this will be the same as analyzedText, as no detailed corrections are made.'),
-  highlightedCorrectedText: z.string().describe('If on-topic, the transcript where problematic segments are wrapped in <mark data-suggestion-id="unique_id">segment</mark> HTML tags. If off-topic, this will be the same as analyzedText with no highlights.'),
-  suggestions: z.array(SuggestionSchema).describe('If on-topic, an array of suggestion objects, each with a unique id, the suggestion text, its type, etc. If off-topic, this will be an empty array.'),
-  overallFeedback: z.string().describe("Overall feedback on the speech. If the speech is deemed off-topic, this feedback MUST primarily state that and explain why, and detailed speech analysis (grammar, fillers etc.) should be skipped. If on-topic, this feedback should include an assessment of clarity, flow, engagement, delivery, and topic relevance."),
+  analyzedText: z
+    .string()
+    .describe(
+      "The original speech transcript that was analyzed. This is always populated."
+    ),
+  correctedText: z
+    .string()
+    .describe(
+      "If the speech was on-topic, this is the clean version with improvements. If off-topic, this will be the same as analyzedText, as no detailed corrections are made."
+    ),
+  highlightedCorrectedText: z
+    .string()
+    .describe(
+      'If on-topic, the transcript where problematic segments are wrapped in <mark data-suggestion-id="unique_id">segment</mark> HTML tags. If off-topic, this will be the same as analyzedText with no highlights.'
+    ),
+  suggestions: z
+    .array(SuggestionSchema)
+    .describe(
+      "If on-topic, an array of suggestion objects, each with a unique id, the suggestion text, its type, etc. If off-topic, this will be an empty array."
+    ),
+  overallFeedback: z
+    .string()
+    .describe(
+      "Overall feedback on the speech. If the speech is deemed off-topic, this feedback MUST primarily state that and explain why, and detailed speech analysis (grammar, fillers etc.) should be skipped. If on-topic, this feedback should include an assessment of clarity, flow, engagement, delivery, and topic relevance."
+    ),
 });
 
 export type GrammarCheckOutput = z.infer<typeof GrammarCheckOutputSchema>;
 
-export async function grammarCheck(input: GrammarCheckInput): Promise<GrammarCheckOutput> {
+export async function grammarCheck(
+  input: GrammarCheckInput
+): Promise<GrammarCheckOutput> {
   return grammarCheckFlow(input);
 }
 
 const grammarCheckPrompt = ai.definePrompt({
-  name: 'speechAnalysisPrompt',
-  input: {schema: GrammarCheckInputSchema},
-  output: {schema: GrammarCheckOutputSchema},
+  name: "speechAnalysisPrompt",
+  input: { schema: GrammarCheckInputSchema },
+  output: { schema: GrammarCheckOutputSchema },
   prompt: `You are an AI-powered speech and writing coach.
 Your primary task is to first evaluate if the user's speech transcript is relevant to the provided topic.
 Then, provide feedback and analysis accordingly.
@@ -109,18 +157,23 @@ Remember: If a topic is provided and the speech is off-topic, DO NOT perform det
 
 const grammarCheckFlow = ai.defineFlow(
   {
-    name: 'grammarCheckFlow',
+    name: "grammarCheckFlow",
     inputSchema: GrammarCheckInputSchema,
     outputSchema: GrammarCheckOutputSchema,
   },
-  async input => {
-    const {output} = await grammarCheckPrompt(input);
+  async (input) => {
+    const { output } = await grammarCheckPrompt(input);
     if (output) {
-        output.analyzedText = output.analyzedText || input.text; 
-        output.suggestions = output.suggestions || []; 
-        output.correctedText = output.correctedText === undefined ? input.text : output.correctedText;
-        output.highlightedCorrectedText = output.highlightedCorrectedText === undefined ? input.text : output.highlightedCorrectedText;
-        output.overallFeedback = output.overallFeedback || "Could not generate feedback.";
+      output.analyzedText = output.analyzedText || input.text;
+      output.suggestions = output.suggestions || [];
+      output.correctedText =
+        output.correctedText === undefined ? input.text : output.correctedText;
+      output.highlightedCorrectedText =
+        output.highlightedCorrectedText === undefined
+          ? input.text
+          : output.highlightedCorrectedText;
+      output.overallFeedback =
+        output.overallFeedback || "Could not generate feedback.";
     }
     return output!;
   }
