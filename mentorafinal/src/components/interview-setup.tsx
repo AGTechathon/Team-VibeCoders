@@ -40,7 +40,7 @@ export function InterviewSetup({ onStartInterview, loading }: InterviewSetupProp
   }
 
   return (
-    <Card className="w-full max-w-lg shadow-xl animate-enter">
+    <Card className="w-full max-w-lg mx-auto shadow-xl animate-enter bg-white dark:bg-gray-800">
       <CardHeader>
         <CardTitle className="text-3xl font-headline text-center flex items-center justify-center gap-2">
           <Brain className="w-8 h-8 text-primary" />

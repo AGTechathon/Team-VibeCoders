@@ -208,7 +208,7 @@ export function InterviewSession({ config, onInterviewComplete, isStartingSessio
 
   if (isLoadingQuestions || isStartingSession) {
     return (
-      <Card className="w-full max-w-2xl shadow-xl animate-enter">
+      <Card className="w-full max-w-lg mx-auto shadow-xl animate-enter bg-white dark:bg-gray-800">
         <CardHeader>
           <CardTitle className="text-3xl font-headline text-center">Preparing Your Interview...</CardTitle>
         </CardHeader>
@@ -225,7 +225,7 @@ export function InterviewSession({ config, onInterviewComplete, isStartingSessio
 
   if (questions.length === 0 && !isLoadingQuestions) {
     return (
-       <Card className="w-full max-w-2xl shadow-xl animate-enter">
+       <Card className="w-full max-w-lg mx-auto shadow-xl animate-enter bg-white dark:bg-gray-800">
         <CardHeader>
           <CardTitle className="text-3xl font-headline text-center">Interview Session</CardTitle>
         </CardHeader>
@@ -255,7 +255,7 @@ export function InterviewSession({ config, onInterviewComplete, isStartingSessio
 
 
   return (
-    <Card className="w-full max-w-2xl shadow-xl animate-enter">
+    <Card className="w-full max-w-lg mx-auto shadow-xl animate-enter bg-white dark:bg-gray-800">
       <CardHeader>
         <CardTitle className="text-3xl font-headline text-center">Interview Session</CardTitle>
         <CardDescription className="text-center">
